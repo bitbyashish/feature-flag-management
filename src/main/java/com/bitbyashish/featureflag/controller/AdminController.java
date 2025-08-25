@@ -4,6 +4,8 @@ import com.bitbyashish.featureflag.dto.FeatureFlagRequest;
 import com.bitbyashish.featureflag.dto.FeatureFlagResponse;
 import com.bitbyashish.featureflag.entity.Environment;
 import com.bitbyashish.featureflag.service.FeatureFlagService;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +21,7 @@ public class AdminController {
 
     // Create new feature flag
     @PostMapping
-    public ResponseEntity<FeatureFlagResponse> createFlag(@RequestBody FeatureFlagRequest request) {
+    public ResponseEntity<FeatureFlagResponse> createFlag(@Valid @RequestBody FeatureFlagRequest request) {
         return ResponseEntity.ok(flagService.createFlag(request));
     }
 
