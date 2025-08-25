@@ -1,7 +1,8 @@
 package com.bitbyashish.featureflag.controller;
 
+import com.bitbyashish.featureflag.dto.FeatureFlagRequest;
+import com.bitbyashish.featureflag.dto.FeatureFlagResponse;
 import com.bitbyashish.featureflag.entity.Environment;
-import com.bitbyashish.featureflag.entity.FeatureFlag;
 import com.bitbyashish.featureflag.service.FeatureFlagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,45 +15,35 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminController {
 
-    private final FeatureFlagService featureFlagService;
+    private final FeatureFlagService flagService;
 
-    // Create new flag
+    // Create new feature flag
     @PostMapping
-    public ResponseEntity<FeatureFlag> createFlag(
-            @RequestBody FeatureFlag flag,
-            @RequestParam(defaultValue = "system") String performedBy) {
-        return ResponseEntity.ok(featureFlagService.createFlag(flag, performedBy));
+    public ResponseEntity<FeatureFlagResponse> createFlag(@RequestBody FeatureFlagRequest request) {
+        return ResponseEntity.ok(flagService.createFlag(request));
     }
 
-    // Update flag
+    // Update existing feature flag
     @PutMapping("/{id}")
-    public ResponseEntity<FeatureFlag> updateFlag(
+    public ResponseEntity<FeatureFlagResponse> updateFlag(
             @PathVariable Long id,
-            @RequestBody FeatureFlag flag,
-            @RequestParam(defaultValue = "system") String performedBy) {
-        return ResponseEntity.ok(featureFlagService.updateFlag(id, flag, performedBy));
+            @RequestBody FeatureFlagRequest request
+    ) {
+        return ResponseEntity.ok(flagService.updateFlag(id, request));
     }
 
     // Toggle ON/OFF
     @PatchMapping("/{id}/toggle")
-    public ResponseEntity<FeatureFlag> toggleFlag(
+    public ResponseEntity<FeatureFlagResponse> toggleFlag(
             @PathVariable Long id,
-            @RequestParam(defaultValue = "system") String performedBy) {
-        return ResponseEntity.ok(featureFlagService.toggleFlag(id, performedBy));
+            @RequestParam boolean enable
+    ) {
+        return ResponseEntity.ok(flagService.toggleFlag(id, enable));
     }
 
-    // Get all flags for environment
+    // Get all flags by environment
     @GetMapping
-    public ResponseEntity<List<FeatureFlag>> getAllFlags(
-            @RequestParam(defaultValue = "DEV") Environment environment) {
-        return ResponseEntity.ok(featureFlagService.getAllFlags(environment));
-    }
-
-    // Get flag by name
-    @GetMapping("/{name}")
-    public ResponseEntity<FeatureFlag> getFlagByName(
-            @PathVariable String name,
-            @RequestParam(defaultValue = "DEV") Environment environment) {
-        return ResponseEntity.ok(featureFlagService.getFlagByName(name, environment));
+    public ResponseEntity<List<FeatureFlagResponse>> getAllFlags(@RequestParam Environment env) {
+        return ResponseEntity.ok(flagService.getAllFlags(env));
     }
 }
